@@ -48,4 +48,22 @@ class GrafoListaCampus:
             return None
         self.listaAdy[valor] = []
         self.tamano = self.tamano + 1
+
+    def agregarConexion(self, vertice1, vertice2, camino: Camino,
+                        dirigido: bool = False):
+        if vertice1 not in self.listaAdy:
+            self.agregarVertice(vertice1)
+        if vertice2 not in self.listaAdy:
+            self.agregarVertice(vertice2)
+ 
+        # Verificar si la conexión ya existe en v1
+        vecinosV1 = [v for v, c in self.listaAdy[vertice1]]
+        if vertice2 not in vecinosV1:
+            self.listaAdy[vertice1].append((vertice2, camino))
+ 
+        # Si no es dirigido, crear relación inversa con el mismo Camino
+        if not dirigido:
+            vecinosV2 = [v for v, c in self.listaAdy[vertice2]]
+            if vertice1 not in vecinosV2:
+                self.listaAdy[vertice2].append((vertice1, camino))
   
