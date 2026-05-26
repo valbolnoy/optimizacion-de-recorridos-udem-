@@ -124,4 +124,44 @@ class GrafoListaCampus:
                                 continue
                             cola.append(vecino)
         return visitados
+    
+
+#santi copia aqui 
+
+
+campus = GrafoListaCampus()
+
+# agregarConexion(origen, destino, Camino(dist, tiempo, cong, accesible, estado))
+
+campus.agregarConexion('Bloque A',    'Bloque B',          Camino(120, 2, 2, True,  'disponible'))
+campus.agregarConexion('Bloque A',    'Biblioteca',        Camino(200, 3, 1, True,  'disponible'))
+campus.agregarConexion('Bloque A',    'Cafeteria',         Camino(150, 2, 3, True,  'disponible'))
+campus.agregarConexion('Bloque A',    'Parqueadero Norte', Camino(300, 4, 1, True,  'disponible'))
+campus.agregarConexion('Bloque B',    'Laboratorios',      Camino(100, 2, 1, True,  'disponible'))
+campus.agregarConexion('Bloque B',    'Cafeteria',         Camino(180, 3, 2, False, 'disponible'))
+campus.agregarConexion('Bloque B',    'Bloque C',          Camino(130, 2, 1, True,  'disponible'))
+campus.agregarConexion('Bloque C',    'Teatro',            Camino(250, 4, 1, True,  'disponible'))
+campus.agregarConexion('Bloque C',    'Enfermeria',        Camino(170, 3, 1, True,  'disponible'))
+campus.agregarConexion('Bloque C',    'Zona Deportiva',    Camino(220, 4, 2, True,  'disponible'))
+campus.agregarConexion('Biblioteca',  'Oficinas Admin',    Camino(140, 2, 1, True,  'disponible'))
+campus.agregarConexion('Biblioteca',  'Cafeteria',         Camino(160, 3, 3, True,  'disponible'))
+campus.agregarConexion('Laboratorios','Bloque A',          Camino(110, 2, 2, False, 'mantenimiento'))
+campus.agregarConexion('Laboratorios','Zona Deportiva',    Camino(350, 5, 1, True,  'disponible'))
+campus.agregarConexion('Cafeteria',   'Teatro',            Camino(200, 3, 2, True,  'disponible'))
+campus.agregarConexion('Cafeteria',   'Parqueadero Sur',   Camino(180, 3, 1, True,  'disponible'))
+campus.agregarConexion('Teatro',      'Parqueadero Norte', Camino(300, 4, 1, True,  'bloqueado'))
+campus.agregarConexion('Teatro',      'Enfermeria',        Camino(120, 2, 1, True,  'disponible'))
+campus.agregarConexion('Enfermeria',  'Oficinas Admin',    Camino(100, 2, 1, True,  'disponible'))
+campus.agregarConexion('Enfermeria',  'Parqueadero Sur',   Camino(260, 4, 1, True,  'disponible'))
+campus.agregarConexion('Zona Deportiva','Parqueadero Norte',Camino(280, 4, 1, True, 'disponible'))
+campus.agregarConexion('Parqueadero Norte','Parqueadero Sur',Camino(500,7, 1, True, 'disponible'))
+campus.agregarConexion('Oficinas Admin','Parqueadero Sur',  Camino(230, 3, 1, True, 'disponible'))
+    
+
+
+
+
+
+
+
  
