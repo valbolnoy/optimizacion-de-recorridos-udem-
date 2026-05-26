@@ -78,4 +78,17 @@ class GrafoListaCampus:
                 if vecino == otro:
                     camino.estado = nuevoEstado
         print(f"  Estado de '{vertice1} <-> {vertice2}' actualizado a '{nuevoEstado}'")
+
+    def mostrarGrafo(self):
+        print("\n" + "="*65)
+        print("      MAPA DEL CAMPUS UDeM  -  Lista de Adyacencia")
+        print("="*65)
+        for lugar in self.listaAdy:
+            print(f"\n  {lugar}:")
+            if self.listaAdy[lugar]:
+                for vecino, camino in self.listaAdy[lugar]:
+                    print(f"     --> {vecino}  {camino}")
+            else:
+                print("     (sin conexiones)")
+        print("="*65)
  
