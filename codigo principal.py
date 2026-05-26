@@ -102,4 +102,26 @@ class GrafoListaCampus:
                     encontrado = True
         if not encontrado:
             print("    Todos los caminos estan disponibles.")
+
+    
+    def recorrerEnAnchura(self, verticeInicial: any,
+                          soloAccesible: bool = False) -> List[Any]:
+        if verticeInicial not in self.listaAdy:
+            return []
+ 
+        visitados = []
+        cola = deque([verticeInicial])
+ 
+        while cola:
+            vertice = cola.popleft()
+            if vertice not in visitados:
+                visitados.append(vertice)
+                for vecino, camino in self.listaAdy[vertice]:
+                    if vecino not in visitados:
+                        # Restricción: camino disponible y accesible si se pide
+                        if camino.estaDisponible():
+                            if soloAccesible and not camino.accesible:
+                                continue
+                            cola.append(vecino)
+        return visitados
  
