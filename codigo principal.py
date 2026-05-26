@@ -32,4 +32,10 @@ class Camino:
         elif factor == 'congestion':
             return self.congestion
         return self.distancia
+    
+    def __repr__(self):
+        return (f"[dist:{self.distancia}m | tiempo:{self.tiempo}min | "
+                f"cong:{self.congestion} | accesible:{self.accesible} | "
+                f"estado:{self.estado}]")
+ 
   
