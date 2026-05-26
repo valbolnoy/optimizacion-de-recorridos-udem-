@@ -42,4 +42,10 @@ class GrafoListaCampus:
     def __init__(self):
         self.listaAdy: Dict[Any, List[Tuple[Any, Camino]]] = {}
         self.tamano: int = 0
+
+    def agregarVertice(self, valor: any):
+        if valor in self.listaAdy:
+            return None
+        self.listaAdy[valor] = []
+        self.tamano = self.tamano + 1
   
