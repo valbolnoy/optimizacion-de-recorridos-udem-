@@ -92,3 +92,14 @@ class GrafoListaCampus:
                 print("     (sin conexiones)")
         print("="*65)
  
+    def mostrarCaminosBloqueados(self):
+        print("\n  Caminos NO disponibles:")
+        encontrado = False
+        for origen in self.listaAdy:
+            for vecino, camino in self.listaAdy[origen]:
+                if not camino.estaDisponible():
+                    print(f"    {origen} --> {vecino} [{camino.estado}]")
+                    encontrado = True
+        if not encontrado:
+            print("    Todos los caminos estan disponibles.")
+ 
