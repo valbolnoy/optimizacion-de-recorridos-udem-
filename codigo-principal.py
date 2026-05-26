@@ -32,18 +32,6 @@ class GrafoLista:
             if vertice1 not in vecinosVertice2:
                 self.listaAdy[vertice2].append((vertice1, peso))
 
-    # -----------------------------------------------------------------------
-    # MÉTODO 1: agregarConexionCampus
-    # Extiende agregarConexion para manejar los 5 atributos de cada camino:
-    #   - distancia   : metros entre los dos lugares
-    #   - tiempo      : minutos estimados de recorrido
-    #   - congestion  : nivel de 1 (libre) a 5 (muy congestionado)
-    #   - accesible   : True si permite movilidad reducida, False si no
-    #   - estado      : "disponible", "bloqueado" o "mantenimiento"
-    #
-    # El peso se guarda como un diccionario con todos esos campos,
-    # en vez de un número simple como en la clase base.
-    # -----------------------------------------------------------------------
     def agregarConexionCampus(self, vertice1, vertice2,
                                distancia: float,
                                tiempo: float,
@@ -57,7 +45,6 @@ class GrafoLista:
         if vertice2 not in self.listaAdy:
             self.agregarVertice(vertice2)
 
-        # Empaquetamos todos los atributos del camino en un diccionario
         atributos = {
             "distancia":  distancia,
             "tiempo":     tiempo,
@@ -75,22 +62,7 @@ class GrafoLista:
             if vertice1 not in vecinosV2:
                 self.listaAdy[vertice2].append((vertice1, atributos))
 
-    # -----------------------------------------------------------------------
-    # MÉTODO 2: dijkstraCampus
-    # Calcula la ruta óptima entre dos vértices según un criterio elegido.
-    #
-    # Criterios disponibles:
-    #   "distancia"  → ruta más corta en metros
-    #   "tiempo"     → ruta más rápida en minutos
-    #   "congestion" → ruta con menor congestión acumulada
-    #   "accesible"  → ruta solo por caminos accesibles para movilidad reducida
-    #
-    # Reglas que siempre aplican:
-    #   - Los caminos con estado "bloqueado" o "mantenimiento" se IGNORAN.
-    #   - Si el criterio es "accesible", además se ignoran caminos no accesibles.
-    #
-    # Retorna: (costo_total, lista_de_vertices_en_orden, explicacion)
-    # -----------------------------------------------------------------------
+
     def dijkstraCampus(self, verticeInicial: any, verticeFinal: any,
                         criterio: str = "distancia") -> tuple:
 
@@ -112,21 +84,15 @@ class GrafoLista:
         while verticeActual is not None and verticeActual != verticeFinal:
 
             for vecino, atributos in self.listaAdy[verticeActual]:
-
-                # --- FILTRO 1: ignorar caminos bloqueados o en mantenimiento ---
                 if atributos["estado"] in ("bloqueado", "mantenimiento"):
                     continue
 
-                # --- FILTRO 2: si el criterio es accesible, ignorar no accesibles ---
                 if criterio == "accesible" and not atributos["accesible"]:
                     continue
 
                 if vecino in visitados:
                     continue
 
-                # --- Selección del peso según el criterio elegido ---
-                # Para "accesible" usamos tiempo como métrica de optimización,
-                # ya que la restricción de accesibilidad ya fue aplicada arriba
                 if criterio == "accesible":
                     peso = atributos["tiempo"]
                 else:
@@ -140,7 +106,6 @@ class GrafoLista:
 
             visitados.append(verticeActual)
 
-            # Buscar el siguiente vértice no visitado con menor costo acumulado
             distanciaMenor = float('inf')
             verticeMenor   = None
 
@@ -151,7 +116,6 @@ class GrafoLista:
 
             verticeActual = verticeMenor
 
-        # --- Reconstruir el camino ---
         if distancias[verticeFinal] == float('inf'):
             return (float('inf'), [], "No existe ruta disponible entre los vértices dados.")
 
@@ -160,8 +124,6 @@ class GrafoLista:
         while pasoActual is not None:
             camino.insert(0, pasoActual)
             pasoActual = predecesores[pasoActual]
-
-        # --- Generar explicación según el criterio ---
         costo = distancias[verticeFinal]
         if criterio == "distancia":
             explicacion = (f"Ruta más corta por distancia: {costo:.0f} metros. "
@@ -182,62 +144,39 @@ class GrafoLista:
 
         return (costo, camino, explicacion)
 
-    # -----------------------------------------------------------------------
-    # MÉTODO 3: arbolExpansionMinima (algoritmo de Prim)
-    # Construye el árbol de expansión mínima del grafo usando distancia
-    # como criterio (para el recorrido de visitantes).
-    #
-    # ¿Cómo funciona Prim?
-    #   1. Arranca desde un vértice inicial (cualquiera).
-    #   2. Mantiene dos grupos: vértices YA incluidos en el árbol y
-    #      vértices PENDIENTES por incluir.
-    #   3. En cada paso elige la arista de menor distancia que conecte
-    #      un vértice del grupo "incluidos" con uno del grupo "pendientes".
-    #   4. Agrega ese vértice al árbol y repite hasta incluir todos.
-    #
-    # Solo considera caminos disponibles (ignora bloqueados/mantenimiento).
-    # No aplica restricción de accesibilidad porque los visitantes no la tienen.
-    #
-    # Retorna: (distancia_total, lista_de_aristas_del_arbol)
-    #   Cada arista es una tupla (verticeOrigen, verticeDestino, distancia)
-    # -----------------------------------------------------------------------
     def arbolExpansionMinima(self, verticeInicial: any) -> tuple:
 
         if verticeInicial not in self.listaAdy:
             return (float('inf'), [])
 
-        incluidos  = [verticeInicial]   # Vértices ya dentro del árbol
-        aristas    = []                 # Aristas elegidas para el árbol
+        incluidos  = [verticeInicial]   
+        aristas    = []               
         distanciaTotal = 0
 
-        # Seguimos mientras haya vértices sin incluir
+
         while len(incluidos) < len(self.listaAdy):
 
             mejorDistancia = float('inf')
-            mejorArista    = None       # (origen, destino, distancia)
+            mejorArista    = None      
 
-            # Revisar todas las aristas que salen de vértices ya incluidos
+
             for vertice in incluidos:
                 for vecino, atributos in self.listaAdy[vertice]:
 
-                    # Ignorar caminos no disponibles
+
                     if atributos["estado"] in ("bloqueado", "mantenimiento"):
                         continue
 
-                    # Solo nos interesan vecinos que aún NO están en el árbol
                     if vecino in incluidos:
                         continue
 
-                    # Comparar con la mejor arista encontrada hasta ahora
                     if atributos["distancia"] < mejorDistancia:
                         mejorDistancia = atributos["distancia"]
                         mejorArista    = (vertice, vecino, atributos["distancia"])
 
-            # Si no encontramos ninguna arista, el grafo no es conexo
             if mejorArista is None:
                 break
 
-            # Agregar el nuevo vértice al árbol
             origen, destino, dist = mejorArista
             incluidos.append(destino)
             aristas.append(mejorArista)
@@ -245,18 +184,7 @@ class GrafoLista:
 
         return (distanciaTotal, aristas)
 
-    # -----------------------------------------------------------------------
-    # MÉTODO 4: mostrarRuta
-    # Función de presentación: imprime en pantalla la ruta óptima encontrada
-    # por dijkstraCampus de forma clara y estructurada.
-    #
-    # Muestra:
-    #   - Origen y destino
-    #   - Criterio usado
-    #   - La ruta paso a paso con los atributos de cada tramo
-    #   - El costo total
-    #   - La explicación del por qué se eligió esa ruta
-    # -----------------------------------------------------------------------
+
     def mostrarRuta(self, verticeInicial: any, verticeFinal: any,
                     criterio: str = "distancia"):
 
@@ -275,12 +203,10 @@ class GrafoLista:
 
         print(f"\n  Recorrido ({len(camino) - 1} tramos):")
 
-        # Mostrar cada tramo con sus atributos
         for i in range(len(camino) - 1):
             origen  = camino[i]
             destino = camino[i + 1]
 
-            # Buscar los atributos del tramo en la lista de adyacencia
             atributos = None
             for vecino, attrs in self.listaAdy[origen]:
                 if vecino == destino:
@@ -303,26 +229,9 @@ class GrafoLista:
         print("=" * 60)
 
 
-# =============================================================================
-# MODELADO DEL CAMPUS UdeM
-# 15 vértices = lugares del campus
-# Cada conexión tiene: distancia(m), tiempo(min), congestión(1-5),
-#                      accesible(bool), estado
-# =============================================================================
+
 
 campus = GrafoLista()
-
-#  Nodos:
-#  BloqueA, BloqueB, BloqueC, BloqueD  → bloques académicos
-#  Lab1, Lab2                           → laboratorios
-#  Biblioteca                           → biblioteca central
-#  Cafeteria                            → cafetería
-#  Parqueadero1, Parqueadero2           → parqueaderos
-#  Teatro                               → teatro universitario
-#  Enfermeria                           → enfermería
-#  Deportes                             → zona deportiva
-#  Admisiones                           → oficinas administrativas
-#  Entrada                              → entrada principal
 
 campus.agregarConexionCampus("Entrada",      "BloqueA",      distancia=120, tiempo=2,   congestion=3, accesible=True,  estado="bloqueado")
 campus.agregarConexionCampus("Entrada",      "Parqueadero1", distancia=80,  tiempo=1,   congestion=4, accesible=True,  estado="disponible")
@@ -350,11 +259,10 @@ campus.agregarConexionCampus("Enfermeria",   "Deportes",     distancia=150, tiem
 
 
 
-# --- Dijkstra con los 4 criterios usando mostrarRuta ---
 for criterio in ["distancia", "tiempo", "congestion", "accesible"]:
     campus.mostrarRuta("Entrada", "Deportes", criterio)
 
-# --- Árbol de expansión mínima para recorrido de visitantes ---
+
 
 print("  RECORRIDO DE VISITANTES — ÁRBOL DE EXPANSIÓN MÍNIMA (Prim)")
 distanciaTotal, aristas = campus.arbolExpansionMinima("Entrada")
