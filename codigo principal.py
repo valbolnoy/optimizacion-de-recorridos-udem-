@@ -66,4 +66,16 @@ class GrafoListaCampus:
             vecinosV2 = [v for v, c in self.listaAdy[vertice2]]
             if vertice1 not in vecinosV2:
                 self.listaAdy[vertice2].append((vertice1, camino))
-  
+
+    def cambiarEstadoCamino(self, vertice1, vertice2, nuevoEstado: str):
+        estadosValidos = {'disponible', 'bloqueado', 'mantenimiento'}
+        if nuevoEstado not in estadosValidos:
+            print(f"Estado invalido. Use: {estadosValidos}")
+            return
+        for lugar in [vertice1, vertice2]:
+            otro = vertice2 if lugar == vertice1 else vertice1
+            for vecino, camino in self.listaAdy[lugar]:
+                if vecino == otro:
+                    camino.estado = nuevoEstado
+        print(f"  Estado de '{vertice1} <-> {vertice2}' actualizado a '{nuevoEstado}'")
+ 
