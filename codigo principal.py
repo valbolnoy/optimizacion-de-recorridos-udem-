@@ -38,4 +38,8 @@ class Camino:
                 f"cong:{self.congestion} | accesible:{self.accesible} | "
                 f"estado:{self.estado}]")
  
+class GrafoListaCampus:
+    def __init__(self):
+        self.listaAdy: Dict[Any, List[Tuple[Any, Camino]]] = {}
+        self.tamano: int = 0
   
