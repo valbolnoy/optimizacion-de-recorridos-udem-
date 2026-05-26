@@ -348,19 +348,15 @@ campus.agregarConexionCampus("Teatro",       "Enfermeria",   distancia=110, tiem
 campus.agregarConexionCampus("Admisiones",   "BloqueA",      distancia=130, tiempo=2,   congestion=2, accesible=True,  estado="disponible")
 campus.agregarConexionCampus("Enfermeria",   "Deportes",     distancia=150, tiempo=2.5, congestion=1, accesible=True,  estado="disponible")
 
-# =============================================================================
-# PRUEBAS
-# =============================================================================
+
 
 # --- Dijkstra con los 4 criterios usando mostrarRuta ---
 for criterio in ["distancia", "tiempo", "congestion", "accesible"]:
     campus.mostrarRuta("Entrada", "Deportes", criterio)
 
 # --- Árbol de expansión mínima para recorrido de visitantes ---
-print("\n" + "=" * 60)
-print("  RECORRIDO DE VISITANTES — ÁRBOL DE EXPANSIÓN MÍNIMA (Prim)")
-print("=" * 60)
 
+print("  RECORRIDO DE VISITANTES — ÁRBOL DE EXPANSIÓN MÍNIMA (Prim)")
 distanciaTotal, aristas = campus.arbolExpansionMinima("Entrada")
 
 print(f"\n  Tramos del recorrido ({len(aristas)} conexiones):")
@@ -369,7 +365,7 @@ for i, (origen, destino, dist) in enumerate(aristas, 1):
 
 print(f"\n  Distancia total del recorrido: {distanciaTotal:.0f} metros")
 print(f"  Lugares cubiertos: {len(aristas) + 1} de {campus.tamano}")
-print("=" * 60)
+
 
 campus.mostrarRuta("Entrada", "Capilla", "distancia")
  
